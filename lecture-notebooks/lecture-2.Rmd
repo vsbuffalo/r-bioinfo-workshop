@@ -1,0 +1,129 @@
+---
+title: "Lecture 2 — Visualization I"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+head(mpg)
+```
+
+```{r}
+summary(mpg$hwy)
+summary(mpg$cty)
+```
+
+```{r}
+hist(mpg$hwy)
+```
+
+Let's use ggplot2:
+
+```{r}
+ggplot(mpg) + geom_histogram(aes(x=hwy))
+```
+
+Let's look at `hwy` and `displ`:
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ))
+```
+
+Does using `cty` make a difference? This is a different measure of fuel efficiency. 
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=cty, y=displ))
+
+```
+
+Nope, that doesn't make a difference
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ, color=trans))
+```
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ, color=class))
+```
+
+
+## Fuel Efficiency By Year
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=year, y=hwy))
+```
+
+```{r}
+table(mpg$year)
+```
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=class, color=year))
+```
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=class, color=as.factor(year)))
+```
+
+
+
+```{r}
+ggplot(mpg) + geom_boxplot(aes(y=hwy, x=class))
+```
+
+
+Note: If you wanted to flip the axes, use `coord_flip()`. For example:
+
+
+```{r}
+ggplot(mpg) + geom_boxplot(aes(y=hwy, x=class)) + coord_flip()
+```
+
+```{r}
+ggplot(mpg) + geom_boxplot(aes(y=hwy, x=class)) + geom_point(aes(x=class, y=hwy, color=as.factor(year)))
+```
+
+Due to overplotting: I am thinking about using some jitter to disperse the points. 
+```{r}
+ggplot(mpg) + geom_boxplot(aes(y=hwy, x=class)) + geom_jitter(aes(x=class, y=hwy, color=as.factor(year)))
+```
+
+We could, if we liked this plot, customize it a bit. 
+
+
+```{r}
+ggplot(mpg) + geom_jitter(aes(x=class, y=hwy, color=as.factor(year))) + geom_boxplot(aes(y=hwy, x=class))
+```
+
+
+## Facetting 
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ)) + facet_wrap(~ class)
+```
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ)) + facet_wrap(~ year)
+```
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ, color=as.factor(year)))
+```
+
+Some fun before next time:
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=hwy, y=displ, color=as.factor(year))) + geom_smooth(aes(x=hwy, y=displ, color=as.factor(year)))
+```
+
+Exercises:
+
+ - Keep exploring the `mpg` data.
+ - Look up how to change the size of points.
+ - Look up how to change the shape of points.
+ - Make a violin plot of the hwy by class.
