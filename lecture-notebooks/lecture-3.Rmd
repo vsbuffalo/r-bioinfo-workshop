@@ -1,0 +1,110 @@
+---
+title: "Lecture 3 — Visualization II"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+ggplot(diamonds) + geom_point(aes(x=carat, y=price), color='seagreen2')
+```
+
+This is different from mapping a column to a color:
+```{r}
+ggplot(diamonds) + geom_point(aes(x=carat, y=price, color=cut))
+```
+
+```{r}
+ggplot(diamonds) + geom_point(aes(x=carat, y=price), size=0.5, alpha=1/100)
+```
+We're able to see the  story of the data only after dealing with overplotting. Larger diamonds are rare and expensive.
+
+
+
+```{r}
+ggplot(data=diamonds, mapping=aes(x=carat, y=price, color=cut)) + geom_point(size=0.3, alpha=1/100) + geom_smooth()
+```
+
+We can also specify the model to use, e.g. `method='loess'` or `method='lm'`. 
+```{r}
+ggplot(data=diamonds, mapping=aes(x=carat, y=price, color=cut)) + geom_point(size=0.3, alpha=1/100) + geom_smooth(method='loess')
+```
+
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, color=class)) + geom_point() + geom_smooth()
+```
+
+Yikes! This is a great example of overfitting! See the purple line for an example.
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, color=class)) + geom_point() + geom_smooth(method='lm')
+```
+If we didn't want multiple lines, provide different `aes()`:
+
+```{r}
+ggplot(mpg) + geom_point(aes(x=displ, y=hwy, color=class)) + geom_smooth(aes(x=displ, y=hwy), method='lm')
+```
+
+
+## Refining Plots:
+
+Labels!
+
+```{r}
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)")
+```
+
+```{r}
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)") + theme_bw()
+```
+```{r}
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)") + theme_classic()
+```
+```{r}
+library(ggthemes)
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)") + theme_economist()
+```
+```{r}
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)") + theme_tufte()
+```
+```{r}
+ggplot(faithful) + geom_point(aes(eruptions, waiting)) + ggtitle("Old Faithful") + xlab("Eruptions (minutes)")+ ylab("Waiting (minutes)") + theme_fivethirtyeight()
+```
+
+Other customizations are possible! See the ggplot2 documentation.
+
+Also! You can use R base graphics, e.g.
+
+```{r}
+plot(faithful$eruptions, faithful$waiting)
+```
+
+## Geom Line and Dataframes
+
+```{r}
+ex_data <- data.frame(timepoint=c(1, 2, 3), value=c(1, 6, 7))
+ex_data
+```
+
+```{r}
+ggplot(ex_data) + geom_line(aes(x=timepoint, y=value)) + geom_point(aes(x=timepoint, y=value))
+```
+
+Now, let's try something — https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+```{r}
+ggplot(ex_data, aes(x=timepoint, y=value)) + geom_point(size=2) + geom_line(linetype=2) 
+```
+
+## Last Bit: Density and Frequency Plots
+
+```{r}
+ggplot(diamonds)+ geom_freqpoly(aes(x=carat, color=cut))
+```
+
+```{r}
+ggplot(diamonds)+ geom_point(aes(x=carat, y=price, color=cut))  + facet_wrap(~clarity)
+```
