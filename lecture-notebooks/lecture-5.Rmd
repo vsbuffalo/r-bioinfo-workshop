@@ -1,0 +1,133 @@
+---
+title: "Lecture 5"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Using R default methods:
+
+```{r}
+recomb <- read.table("hapmapRecombRate.bed", sep="\t")
+head(recomb)
+```
+
+We can manually change the column names:
+
+```{r}
+colnames(recomb)
+```
+
+```{r}
+colnames(recomb) <- c('chr', 'start', 'end', 'recomb')
+head(recomb)
+```
+
+## Using the readr package
+
+```{r}
+recomb <- read_tsv('./hapmapRecombRate.bed')
+
+head(recomb)
+```
+
+But beware! This loaded the first row as the column names.
+
+The lesson here is to always look at the data after you read it in.
+
+One solution is to specify `col_names=FALSE`:
+
+```{r}
+recomb <- read_tsv('./hapmapRecombRate.bed', col_names=FALSE)
+```
+
+But then we'd need to change these with `colnames()`
+But, there's an even simpler way — specify the column names in the `read_tsv()` function:
+
+```{r}
+recomb <- read_tsv('./hapmapRecombRate.bed',
+                   col_names=c("chr", "start" , "end", "recomb"))
+```
+
+
+
+```{r}
+head(recomb)
+```
+
+Always check that the column types are as you expect!!
+
+```{r}
+ggplot(recomb) + geom_point(aes(x=start, y=recomb))
+```
+
+How many chromosomes are in the data set?
+
+```{r}
+dim(recomb)
+```
+
+```{r}
+unique(recomb$chr)
+```
+
+```{r}
+table(recomb$chr)
+```
+
+```{r}
+ggplot(recomb, aes(x=start, y=recomb)) + geom_point() + facet_wrap(~ chr)
+```
+
+```{r}
+ggplot(recomb, aes(x=start, y=recomb)) + facet_wrap(~ chr) + geom_smooth()
+```
+
+
+We ditched the points because outliers were driving this plot. 
+
+## Data Loading Adventure!
+
+```{r}
+list.files()
+```
+
+```{r}
+d <- read_tsv('iris.txt')
+```
+
+```{r}
+as.numeric(d$Sepal.Width)
+```
+
+We see some missing values! Strange.
+
+
+Goals:
+ - why are some of the values above missing? Can we fix them all (or leave them missing?)
+ - Count the number of unique species in the last column. What's wrong? Use the hints below to help fix the errors.
+ - Plot the data. Is there anything that looks like it needs to be fixed?
+ 
+ 
+```{r}
+unique(d$Species)
+```
+
+
+Some hints: The function `which()` is very useful — read it's documentation.
+
+To assign a new value to a column/row in R, use the follow example as an illustration:
+
+```{r}
+mistake <- data.frame(animal=c("frog", "frog", "dog", "dag", "frag"))
+mistake
+```
+
+```{r}
+mistake$animal[4] <- "dog"
+mistake$animal[5] <- "frog"
+mistake
+```
+
