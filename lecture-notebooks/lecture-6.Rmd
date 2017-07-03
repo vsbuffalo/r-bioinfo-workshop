@@ -1,0 +1,102 @@
+# Lecture 5 — dplyr
+
+
+## Pipes
+
+Pipes allow you to see how data is being transformed from operation to another. Here is a simple fake example where we're not using pipes (this is all psuedocode):
+
+```{r}
+
+# my_data <- read_csv('some_data.csv')
+# my_data_cleaned <- clean(my_data)
+# my_data_without_NA <- remove_NA(my_data_cleaned)
+
+```
+
+So this stores all three copies (with slight variants) of the original, possible large dataset! 
+
+```{r}
+
+# my_data_without_NA  <- remove_NA(clean(read_csv('some_data.csv')))
+
+```
+
+To understand what this code is doing, we need to go to the middle and read outwards, this isn't how humans read often, and is hard to debug and is hard to understand. So, PIPES!
+
+```{r}
+# library(magrittr)
+# or 
+
+library(tidyverse)
+```
+
+This above is equivalent, in pipes, to this:
+
+```{r}
+# my_data_without_NA  <- remove_NA(clean(read_csv('some_data.csv')))
+# my_data_without_NA <- read_csv('some_data.csv') %>% clean() %>% remove_NA()
+```
+
+
+## Pipes with dplyr
+
+So dplyr has many "verbs" for manipulating dataframes/tibbles. 
+
+```{r}
+iris <- as_tibble(iris)
+
+filter(iris, Sepal.Length > 7 & Sepal.Width < 3)
+```
+
+```{r}
+filter(iris, Sepal.Length > 7 | Sepal.Width < 3)
+```
+
+
+## Arrange
+
+```{r}
+arrange(iris, Sepal.Length)
+
+```
+
+```{r}
+arrange(iris, desc(Sepal.Width))
+```
+
+```{r}
+arrange(iris, Species, Sepal.Length, Sepal.Width)
+
+```
+
+
+## Select
+
+This selects columns (like filter, and arrange, there are base ways of doing this.)
+
+```{r}
+select(iris, Species)
+```
+
+
+```{r}
+select(iris, Sepal.Length:Petal.Length)
+```
+
+## Group_by and summarize
+
+```{r}
+summarize(iris, mean_pl = mean(Petal.Length), median_pl = median(Petal.Length))
+```
+
+```{r}
+iris %>% group_by(Species) %>% summarize(mean_pl = mean(Petal.Length), median_pl = median(Petal.Length))
+
+```
+
+
+## Exercise
+
+1. Find the average depature delay by hour in the day (using dplyr).
+2. Make a plot of the depature delays by hour in day, showing which hours are worse (if any?). Then color by airline and other things to see if you can find patterns.
+3. Read the dplyr chapter (and work through some of these examples)
